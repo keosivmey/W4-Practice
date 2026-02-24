@@ -7,7 +7,16 @@ void main() {
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: Home()));
 }
 
-enum CardType { red, blue }
+enum CardType {
+  red(Colors.red),
+  blue(Colors.blue),
+  green(Colors.green),
+  yellow(Colors.yellow);
+
+  final Color color;
+
+  const CardType(this.color);
+}
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -55,11 +64,12 @@ class ColorTapsScreen extends StatelessWidget {
       body: ListenableBuilder(
         listenable: colorService,
         builder: (context, child) {
-          return Column(
-            children: [
-              ColorTap(type: CardType.red),
-              ColorTap(type: CardType.blue),
-            ],
+          return ListView.builder(
+            itemCount: CardType.values.length,
+            itemBuilder: (context, index) {
+              final type = CardType.values[index];
+              return ColorTap(type: type);
+            },
           );
         },
       ),
@@ -72,7 +82,8 @@ class ColorTap extends StatelessWidget {
 
   const ColorTap({super.key, required this.type});
 
-  Color get backgroundColor => type == CardType.red ? Colors.red : Colors.blue;
+  Color get backgroundColor => type.color;
+  int get tapCount => colorService.tapCounts[type]!;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +99,7 @@ class ColorTap extends StatelessWidget {
         height: 100,
         child: Center(
           child: Text(
-            'Taps: ${type == CardType.red ? colorService.redTapCount : colorService.blueTapCount}',
+            'Taps: $tapCount',
             style: const TextStyle(fontSize: 24, color: Colors.white),
           ),
         ),
@@ -108,18 +119,15 @@ class StatisticsScreen extends StatelessWidget {
         listenable: colorService,
         builder: (context, child) {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Red Taps: ${colorService.redTapCount}',
-                  style: const TextStyle(fontSize: 24),
-                ),
-                Text(
-                  'Blue Taps: ${colorService.blueTapCount}',
-                  style: const TextStyle(fontSize: 24),
-                ),
-              ],
+            child: ListView.builder(
+              itemCount: CardType.values.length,
+              itemBuilder: (context, index) {
+                final type = CardType.values[index];
+                return Text(
+                  '${type.name}Tap: ${colorService.tapCounts[type]}',
+                  style: TextStyle(fontSize: 24),
+                );
+              },
             ),
           );
         },

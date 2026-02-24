@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'color_app.dart';
 
 class ColorService extends ChangeNotifier {
-  int _redTapCount = 0;
-  int _blueTapCount = 0;
+  final Map<CardType, int> _tapCounts = {};
 
-  int get redTapCount => _redTapCount;
-  int get blueTapCount => _blueTapCount;
-
-  void incrementTap(CardType type) {
-    if (type == CardType.red) {
-      _redTapCount++;
-    } else {
-      _blueTapCount++;
+  ColorService() {
+    for (var type in CardType.values) {
+      _tapCounts[type] = 0;
     }
+  }
 
-    notifyListeners(); 
+  Map<CardType, int> get tapCounts => _tapCounts;
+
+  void incrementTap(CardType cardType) {
+    _tapCounts[cardType] = _tapCounts[cardType]! + 1;
+    notifyListeners();
   }
 }
