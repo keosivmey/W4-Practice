@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'ui/providers/theme_color_provider.dart';
 import 'ui/screens/settings/settings_screen.dart';
@@ -6,7 +7,7 @@ import 'ui/screens/downloads/downloads_screen.dart';
 import 'ui/theme/theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(create: (context) => ThemeColorProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -23,6 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeColorProvider colorProvider = context.watch<ThemeColorProvider>();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: appTheme,
@@ -36,7 +38,7 @@ class _MyAppState extends State<MyApp> {
               _currentIndex = index;
             });
           },
-          selectedItemColor: currentThemeColor.color,
+          selectedItemColor: colorProvider.themeColor.color,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Downloads'),
             BottomNavigationBarItem(
